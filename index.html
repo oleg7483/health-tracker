@@ -51,26 +51,48 @@
         .hidden {
             display: none;
         }
+        .chart-container {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>Health Tracker</h1>
     <p>Заполняйте форму ниже, чтобы отслеживать своё состояние здоровья и получать AI-анализ.</p>
 
-    <!-- Форма для ввода данных -->
-    <h2>Ваше текущее состояние</h2>
+    <!-- Форма для текущих данных -->
+    <h2>Заполните данные:</h2>
+    <form id="healthForm">
+        <label for="date">Дата:</label>
+        <input type="date" id="date" name="date">
+        
+        <label for="systolic">Систолическое давление:</label>
+        <input type="number" id="systolic" name="systolic" placeholder="Например, 120">
+        
+        <label for="diastolic">Диастолическое давление:</label>
+        <input type="number" id="diastolic" name="diastolic" placeholder="Например, 80">
+        
+        <label for="pulse">Пульс:</label>
+        <input type="number" id="pulse" name="pulse" placeholder="Например, 70">
+        
+        <label for="condition">Состояние:</label>
+        <textarea id="condition" name="condition" placeholder="Например, лёгкая усталость, беспокойство..."></textarea>
+        
+        <button type="button" onclick="saveEntry()">Сохранить запись</button>
+    </form>
+
+    <h2>Текстовый анализ состояния:</h2>
     <textarea id="userInput" placeholder="Введите описание вашего состояния, например: 'Сегодня сон был плохим, чувствую напряжение в шее...'"></textarea>
     <button onclick="analyze()">Анализ состояния</button>
     <button onclick="clearInput()">Очистить</button>
 
-    <!-- Вывод результатов анализа -->
     <div id="outputContainer" class="hidden">
         <h3>AI Анализ состояния:</h3>
         <div id="output" class="output"></div>
     </div>
 
     <h2>История данных</h2>
-    <table>
+    <table id="historyTable">
         <thead>
             <tr>
                 <th>Дата</th>
@@ -81,18 +103,16 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Пример начальных данных -->
-            <tr>
-                <td>2025-12-27</td>
-                <td>135</td>
-                <td>85</td>
-                <td>78</td>
-                <td>Чувствую себя хорошо.</td>
-            </tr>
+            <!-- Здесь будут добавляться записи -->
         </tbody>
     </table>
 
-    <!-- Скрипт -->
+    <div class="chart-container">
+        <h2>График давления (за последние 10 дней):</h2>
+        <canvas id="bpChart"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="ai-helper.js"></script>
 </body>
 </html>
