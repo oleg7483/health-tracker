@@ -178,6 +178,12 @@ function clearForm() {
 
 // Обновление графиков
 function updateCharts() {
+    // Check if Chart.js is available
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js is not loaded. Charts will not be displayed.');
+        return;
+    }
+    
     const data = loadData();
     const entries = data.entries
         .sort((a, b) => new Date(a.datetime) - new Date(b.datetime))
