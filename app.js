@@ -425,6 +425,13 @@ function clearForm() {
 
 // Инициализация графиков
 function initializeCharts() {
+    // Проверка доступности Chart.js
+    if (typeof Chart === 'undefined') {
+        console.warn('Chart.js не загружен. Графики будут недоступны.');
+        displayChartFallback();
+        return;
+    }
+    
     const bpCtx = document.getElementById('bpChart').getContext('2d');
     const pulseCtx = document.getElementById('pulseChart').getContext('2d');
     
@@ -516,6 +523,20 @@ function initializeCharts() {
     });
 }
 
+// Fallback для отображения когда Chart.js недоступен
+function displayChartFallback() {
+    const chartsContainer = document.querySelector('.charts-container');
+    if (chartsContainer) {
+        chartsContainer.innerHTML = `
+            <div class="chart-fallback" style="grid-column: 1 / -1; padding: 40px; text-align: center; background: #fff3cd; border: 2px solid #ffc107; border-radius: 10px;">
+                <h3 style="color: #856404; margin-bottom: 15px;">📊 Графики временно недоступны</h3>
+                <p style="color: #856404;">Chart.js не загружен из CDN. Для отображения графиков необходимо подключение к интернету.</p>
+                <p style="color: #856404; margin-top: 10px;">Все данные сохраняются в таблице ниже и доступны для экспорта.</p>
+            </div>
+        `;
+    }
+}
+
 // Обновление визуализации
 function updateVisualization() {
     updateCharts();
@@ -524,6 +545,11 @@ function updateVisualization() {
 
 // Обновление графиков
 function updateCharts() {
+    // Проверка доступности Chart.js
+    if (typeof Chart === 'undefined' || !bpChart || !pulseChart) {
+        return; // Графики недоступны
+    }
+    
     const last10Days = dataStore.getLastNDays(10);
     
     const labels = last10Days.map(entry => {
