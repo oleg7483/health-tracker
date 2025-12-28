@@ -291,6 +291,7 @@ input[type="range"] {
     padding: 20px;
     border-radius: 10px;
     border: 2px solid #e0e0e0;
+    min-height: 350px;
 }
 
 .chart-wrapper h3 {
@@ -300,6 +301,7 @@ input[type="range"] {
 
 .chart-wrapper canvas {
     max-height: 300px;
+    height: 300px !important;
 }
 
 /* Records Table */
