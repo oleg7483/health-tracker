@@ -1,243 +1,65 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Tracker - Мониторинг показателей здоровья</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <title>Health Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            background-color: #fafafa;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            background-color: #e8f5e9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏥 Health Tracker</h1>
-            <p>Система мониторинга показателей здоровья</p>
-        </header>
+    <h1>Health Tracker</h1>
+    <p>Вводите свои данные и получите анализ состояния.</p>
+    
+    <h2>Ваше состояние:</h2>
+    <textarea id="userInput" placeholder="Например: Сегодня ощущаю лёгкое напряжение, давление чуть выше обычного..."></textarea>
+    <button onclick="analyze()">Анализ состояния</button>
+    <button onclick="clearInput()">Очистить</button>
 
-        <main>
-            <!-- Форма ввода данных -->
-            <section class="data-entry">
-                <h2>Внесение данных</h2>
-                <form id="healthForm">
-                    <!-- Дата и время -->
-                    <div class="form-group">
-                        <label for="entryDate">Дата и время:</label>
-                        <input type="datetime-local" id="entryDate" name="entryDate" required>
-                    </div>
-
-                    <!-- Артериальное давление -->
-                    <div class="form-section">
-                        <h3>Артериальное давление</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="systolic">Систолическое:</label>
-                                <input type="number" id="systolic" name="systolic" min="80" max="250" required>
-                                <span class="unit">мм рт.ст.</span>
-                            </div>
-                            <div class="form-group">
-                                <label for="diastolic">Диастолическое:</label>
-                                <input type="number" id="diastolic" name="diastolic" min="50" max="150" required>
-                                <span class="unit">мм рт.ст.</span>
-                            </div>
-                            <div class="form-group">
-                                <label for="pulse">Пульс:</label>
-                                <input type="number" id="pulse" name="pulse" min="40" max="200" required>
-                                <span class="unit">уд/мин</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Сон -->
-                    <div class="form-section">
-                        <h3>Сон</h3>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="sleepStart">Время засыпания:</label>
-                                <input type="time" id="sleepStart" name="sleepStart">
-                            </div>
-                            <div class="form-group">
-                                <label for="sleepEnd">Время пробуждения:</label>
-                                <input type="time" id="sleepEnd" name="sleepEnd">
-                            </div>
-                            <div class="form-group">
-                                <label for="sleepQuality">Качество сна (1-5):</label>
-                                <input type="range" id="sleepQuality" name="sleepQuality" min="1" max="5" value="3">
-                                <span id="sleepQualityValue">3</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Самочувствие -->
-                    <div class="form-section">
-                        <h3>Самочувствие</h3>
-                        <div class="form-group">
-                            <label for="wellness">Общее самочувствие (1-5):</label>
-                            <input type="range" id="wellness" name="wellness" min="1" max="5" value="3">
-                            <span id="wellnessValue">3</span>
-                        </div>
-                    </div>
-
-                    <!-- Триггеры -->
-                    <div class="form-section">
-                        <h3>Триггеры</h3>
-                        <div class="triggers-grid">
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="sleep_deprivation">
-                                    Недосып
-                                </label>
-                                <input type="number" class="trigger-detail" id="sleepHours" placeholder="часов сна" min="0" max="12" step="0.5">
-                            </div>
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="head_tilt">
-                                    Работа с наклоном головы
-                                </label>
-                                <input type="number" class="trigger-detail" id="headTiltDuration" placeholder="минут" min="0" max="480">
-                            </div>
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="neck_spasm">
-                                    Шейный спазм
-                                </label>
-                                <input type="range" class="trigger-detail" id="neckSpasm" min="1" max="5" value="1">
-                                <span id="neckSpasmValue">1</span>
-                            </div>
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="stress">
-                                    Стресс/тревога
-                                </label>
-                                <input type="range" class="trigger-detail" id="stressLevel" min="1" max="5" value="1">
-                                <span id="stressLevelValue">1</span>
-                            </div>
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="weather">
-                                    Погодные изменения
-                                </label>
-                            </div>
-                            <div class="trigger-item">
-                                <label>
-                                    <input type="checkbox" name="trigger" value="temperature">
-                                    Температурный дискомфорт
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Симптомы -->
-                    <div class="form-section">
-                        <h3>Симптомы</h3>
-                        <div class="symptoms-grid">
-                            <label>
-                                <input type="checkbox" name="symptom" value="rhythm_disruption">
-                                Перебои ритма
-                            </label>
-                            <label>
-                                <input type="checkbox" name="symptom" value="tinnitus">
-                                Шум в ушах
-                            </label>
-                            <div class="symptom-item">
-                                <label>
-                                    <input type="checkbox" name="symptom" value="occipital_pain">
-                                    Затылочная боль
-                                </label>
-                                <input type="range" class="symptom-detail" id="occipitalPain" min="1" max="5" value="1">
-                                <span id="occipitalPainValue">1</span>
-                            </div>
-                            <label>
-                                <input type="checkbox" name="symptom" value="instability">
-                                Неустойчивость
-                            </label>
-                        </div>
-                        <div class="form-group">
-                            <label for="otherSymptoms">Другие симптомы:</label>
-                            <textarea id="otherSymptoms" name="otherSymptoms" rows="2"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Препараты -->
-                    <div class="form-section">
-                        <h3>Препараты</h3>
-                        <div class="medications-grid">
-                            <div class="medication-item">
-                                <label>
-                                    <input type="checkbox" name="medication" value="aminalon">
-                                    Аминалон
-                                </label>
-                                <input type="number" class="medication-detail" id="aminalonDose" placeholder="мг" min="0" max="2000" step="250">
-                            </div>
-                            <div class="medication-item">
-                                <label>
-                                    <input type="checkbox" name="medication" value="magnesium_b6">
-                                    Магний + B6
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label for="otherMedications">Другие препараты:</label>
-                                <textarea id="otherMedications" name="otherMedications" rows="2"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Заметки -->
-                    <div class="form-section">
-                        <h3>Заметки</h3>
-                        <div class="form-group">
-                            <textarea id="notes" name="notes" rows="3" placeholder="Дополнительные заметки..."></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Кнопки -->
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-primary">💾 Сохранить запись</button>
-                        <button type="button" id="exportMd" class="btn btn-secondary">📄 Экспорт в Markdown</button>
-                        <button type="button" id="exportJson" class="btn btn-secondary">📦 Экспорт в JSON</button>
-                        <button type="button" id="clearForm" class="btn btn-outline">🗑️ Очистить форму</button>
-                    </div>
-                </form>
-            </section>
-
-            <!-- Визуализация -->
-            <section class="visualization">
-                <h2>Визуализация данных (последние 10 дней)</h2>
-                
-                <!-- Легенда зон -->
-                <div class="zones-legend">
-                    <div class="zone-item zone-green">🟢 Зелёная зона (128-140 / 78-90)</div>
-                    <div class="zone-item zone-yellow">🟡 Жёлтая зона (141-150 / 91-100)</div>
-                    <div class="zone-item zone-orange">🟠 Оранжевая зона (151-170 / 101-105)</div>
-                    <div class="zone-item zone-red">🔴 Красная зона (&gt;170 / &gt;105)</div>
-                </div>
-
-                <!-- Графики -->
-                <div class="charts-container">
-                    <div class="chart-wrapper">
-                        <h3>Артериальное давление</h3>
-                        <canvas id="bpChart"></canvas>
-                    </div>
-                    <div class="chart-wrapper">
-                        <h3>Пульс</h3>
-                        <canvas id="pulseChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Таблица последних записей -->
-                <div class="records-table">
-                    <h3>Последние записи</h3>
-                    <div id="recordsTableContainer">
-                        <p class="no-data">Нет записей. Добавьте первую запись.</p>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            <p>&copy; 2024 Health Tracker | Персональный мониторинг здоровья</p>
-        </footer>
+    <div id="outputContainer" class="hidden">
+        <h3>AI Анализ состояния:</h3>
+        <div id="output" class="output"></div>
     </div>
 
-    <script src="app.js"></script>
+    <script src="ai-helper.js"></script>
 </body>
 </html>
