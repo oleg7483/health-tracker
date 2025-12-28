@@ -226,9 +226,14 @@ function updateRangeValue(rangeId, displayId) {
     
     if (rangeInput && displaySpan) {
         displaySpan.textContent = rangeInput.value;
-        rangeInput.addEventListener('input', function() {
-            displaySpan.textContent = this.value;
-        });
+        
+        // Проверяем, не добавлен ли уже обработчик
+        if (!rangeInput.dataset.listenerAdded) {
+            rangeInput.addEventListener('input', function() {
+                displaySpan.textContent = this.value;
+            });
+            rangeInput.dataset.listenerAdded = 'true';
+        }
     }
 }
 
@@ -592,23 +597,9 @@ function handleFormSubmit(event) {
 
 // Функция для показа уведомлений (вместо alert)
 function showNotification(message, type = 'info') {
-    // Создаем элемент уведомления
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
-        color: white;
-        border-radius: 8px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        font-weight: 600;
-        animation: slideIn 0.3s ease-out;
-    `;
     
     document.body.appendChild(notification);
     
@@ -616,7 +607,9 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease-in';
         setTimeout(() => {
-            document.body.removeChild(notification);
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
         }, 300);
     }, 3000);
 }
