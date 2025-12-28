@@ -9,24 +9,24 @@
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 2rem auto;
-            background-color: #f9f9f9;
+            background-color: #fafafa;
             padding: 20px;
-            border-radius: 10px;
             border: 1px solid #ddd;
+            border-radius: 8px;
         }
-        form {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin: 10px 0 5px;
-        }
-        input, textarea, button {
+        textarea {
             width: 100%;
-            padding: 10px;
+            height: 150px;
             margin-bottom: 10px;
+            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 4px;
+        }
+        input, button {
+            margin-top: 10px;
+            font-size: 1rem;
+            padding: 10px;
+            border-radius: 4px;
         }
         button {
             background-color: #007bff;
@@ -37,12 +37,16 @@
         button:hover {
             background-color: #0056b3;
         }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
         .output {
             background-color: #e8f5e9;
-            border: 1px solid #c1e2c4;
             padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            white-space: pre-wrap;
         }
         .hidden {
             display: none;
@@ -51,42 +55,41 @@
 </head>
 <body>
     <h1>Health Tracker</h1>
-    <p>Заполняйте ежедневно, чтобы отслеживать состояние здоровья:</p>
+    <p>Заполняйте форму ниже, чтобы отслеживать своё состояние здоровья и получать AI-анализ.</p>
 
-    <!-- Изначальная форма для ввода данных -->
-    <form id="healthForm">
-        <label for="datetime">Дата и время:</label>
-        <input type="datetime-local" id="datetime" name="datetime">
-
-        <label for="systolic">Систолическое (верхнее) давление:</label>
-        <input type="number" id="systolic" name="systolic" placeholder="Введите верхнее давление">
-
-        <label for="diastolic">Диастолическое (нижнее) давление:</label>
-        <input type="number" id="diastolic" name="diastolic" placeholder="Введите нижнее давление">
-
-        <label for="pulse">Пульс:</label>
-        <input type="number" id="pulse" name="pulse" placeholder="Введите значение пульса">
-
-        <label for="sleep">Сон (часы):</label>
-        <input type="number" id="sleep" name="sleep" placeholder="Введите количество часов сна">
-
-        <label for="condition">Самочувствие:</label>
-        <textarea id="condition" name="condition" placeholder="Введите описание самочувствия"></textarea>
-
-        <button type="button" onclick="saveEntry()">Сохранить запись</button>
-    </form>
-
-    <h2>Ваше состояние:</h2>
-    <textarea id="userInput" placeholder="Введите текст, например: 'Сегодня было сильное напряжение, плохо спал...'"></textarea>
+    <!-- Форма для ввода данных -->
+    <h2>Ваше текущее состояние</h2>
+    <textarea id="userInput" placeholder="Введите описание вашего состояния, например: 'Сегодня сон был плохим, чувствую напряжение в шее...'"></textarea>
     <button onclick="analyze()">Анализ состояния</button>
     <button onclick="clearInput()">Очистить</button>
 
+    <!-- Вывод результатов анализа -->
     <div id="outputContainer" class="hidden">
-        <h3>Результат анализа:</h3>
+        <h3>AI Анализ состояния:</h3>
         <div id="output" class="output"></div>
     </div>
 
-    <!-- Подключаем скрипты -->
-    <script src="ai-helper.js"></script>
-</body>
-</html>
+    <h2>История данных</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Систолическое</th>
+                <th>Диастолическое</th>
+                <th>Пульс</th>
+                <th>Состояние</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Пример начальных данных -->
+            <tr>
+                <td>2025-12-27</td>
+                <td>135</td>
+                <td>85</td>
+                <td>78</td>
+                <td>Чувствую себя хорошо.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Скрипт -->
