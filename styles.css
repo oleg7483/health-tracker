@@ -316,32 +316,43 @@ input[type="range"] {
     font-style: italic;
 }
 
-table {
+table,
+.records-table-element {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
 }
 
 table th,
-table td {
+table td,
+.records-table-element th,
+.records-table-element td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
 
-table th {
+table th,
+.records-table-element th {
     background: #667eea;
     color: white;
     font-weight: 600;
 }
 
-table tr:hover {
+table tr:hover,
+.records-table-element tr:hover {
     background: #f8f9fa;
 }
 
-table td.zone-indicator {
+table td.zone-indicator,
+.records-table-element td.zone-green,
+.records-table-element td.zone-yellow,
+.records-table-element td.zone-orange,
+.records-table-element td.zone-red {
     text-align: center;
     font-weight: bold;
+    padding: 8px;
+    border-radius: 5px;
 }
 
 /* Footer */
