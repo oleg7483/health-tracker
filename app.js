@@ -1,5 +1,8 @@
 // Health Tracker Application Logic with +2 hour timezone adjustment
 
+// Константы
+const TIMEZONE_OFFSET_HOURS = 2; // Смещение времени в часах
+
 // Конфигурация зон
 const ZONES = {
     green: {
@@ -29,7 +32,7 @@ const ZONES = {
 };
 
 // Функция обработки сдвига времени на +2 часа
-function adjustToTimezoneWithOffset(date, offset = 2) {
+function adjustToTimezoneWithOffset(date, offset = TIMEZONE_OFFSET_HOURS) {
     const shiftedDate = new Date(date); // Создаём новую дату на основе переданной
     shiftedDate.setHours(shiftedDate.getHours() + offset); // Сдвигаем часы на значение offset
     return shiftedDate;
@@ -63,7 +66,7 @@ class HealthDataStore {
 
     addEntry(entry) {
         entry.id = Date.now();
-        entry.datetime = adjustToTimezoneWithOffset(new Date(), 2).toISOString(); // Сдвиг на +2 часа
+        entry.datetime = adjustToTimezoneWithOffset(new Date(), TIMEZONE_OFFSET_HOURS).toISOString(); // Сдвиг на +2 часа
         entry.zone = this.calculateZone(entry);
         this.data.entries.unshift(entry);
         this.saveData();
@@ -77,7 +80,7 @@ class HealthDataStore {
     }
 
     getLastNDays(days = 10) {
-        const cutoffDate = adjustToTimezoneWithOffset(new Date(), 2); // Сдвиг на +2 часа
+        const cutoffDate = adjustToTimezoneWithOffset(new Date(), TIMEZONE_OFFSET_HOURS); // Сдвиг на +2 часа
         cutoffDate.setDate(cutoffDate.getDate() - days);
 
         return this.data.entries
@@ -107,7 +110,7 @@ class HealthDataStore {
         let md = '# Журнал показателей здоровья\n\n';
 
         this.data.entries.forEach(entry => {
-            const date = adjustToTimezoneWithOffset(new Date(entry.datetime), 2).toLocaleString('ru-RU');
+            const date = adjustToTimezoneWithOffset(new Date(entry.datetime), TIMEZONE_OFFSET_HOURS).toLocaleString('ru-RU');
             md += `## ${date}\n\n`;
             md += `**АД:** ${entry.systolic}/${entry.diastolic} мм рт.ст.\n`;
             md += `**Пульс:** ${entry.pulse} уд/мин\n`;
@@ -204,7 +207,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Установка текущей даты со сдвигом
 function initializeForm() {
-    const now = adjustToTimezoneWithOffset(new Date(), 2);
+    const now = adjustToTimezoneWithOffset(new Date(), TIMEZONE_OFFSET_HOURS);
     const datetime = now.toISOString().slice(0, 16);
     document.getElementById('entryDate').value = datetime;
 
@@ -584,7 +587,38 @@ function handleFormSubmit(event) {
     initializeForm();
 
     // Показываем уведомление
-    alert('✅ Запись успешно сохранена!');
+    showNotification('✅ Запись успешно сохранена!', 'success');
+}
+
+// Функция для показа уведомлений (вместо alert)
+function showNotification(message, type = 'info') {
+    // Создаем элемент уведомления
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        background: ${type === 'success' ? '#28a745' : type === 'error' ? '#dc3545' : '#667eea'};
+        color: white;
+        border-radius: 8px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        font-weight: 600;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Удаляем уведомление через 3 секунды
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease-in';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
 }
 
 // Вспомогательные функции для получения названий
