@@ -9,24 +9,24 @@
             font-family: Arial, sans-serif;
             max-width: 800px;
             margin: 2rem auto;
-            background-color: #fafafa;
+            background-color: #f9f9f9;
             padding: 20px;
+            border-radius: 10px;
             border: 1px solid #ddd;
-            border-radius: 8px;
         }
-        textarea {
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, textarea, button {
             width: 100%;
-            height: 150px;
+            padding: 10px;
             margin-bottom: 10px;
-            padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        input, button {
-            margin-top: 10px;
-            font-size: 1rem;
-            padding: 10px;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         button {
             background-color: #007bff;
@@ -37,82 +37,56 @@
         button:hover {
             background-color: #0056b3;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
         .output {
             background-color: #e8f5e9;
+            border: 1px solid #c1e2c4;
             padding: 10px;
-            border-radius: 4px;
-            margin-top: 15px;
-            white-space: pre-wrap;
+            border-radius: 5px;
+            margin-top: 10px;
         }
         .hidden {
             display: none;
-        }
-        .chart-container {
-            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Health Tracker</h1>
-    <p>Заполняйте форму ниже, чтобы отслеживать своё состояние здоровья и получать AI-анализ.</p>
+    <p>Заполняйте ежедневно, чтобы отслеживать состояние здоровья:</p>
 
-    <!-- Форма для текущих данных -->
-    <h2>Заполните данные:</h2>
+    <!-- Изначальная форма для ввода данных -->
     <form id="healthForm">
-        <label for="date">Дата:</label>
-        <input type="date" id="date" name="date">
-        
-        <label for="systolic">Систолическое давление:</label>
-        <input type="number" id="systolic" name="systolic" placeholder="Например, 120">
-        
-        <label for="diastolic">Диастолическое давление:</label>
-        <input type="number" id="diastolic" name="diastolic" placeholder="Например, 80">
-        
+        <label for="datetime">Дата и время:</label>
+        <input type="datetime-local" id="datetime" name="datetime">
+
+        <label for="systolic">Систолическое (верхнее) давление:</label>
+        <input type="number" id="systolic" name="systolic" placeholder="Введите верхнее давление">
+
+        <label for="diastolic">Диастолическое (нижнее) давление:</label>
+        <input type="number" id="diastolic" name="diastolic" placeholder="Введите нижнее давление">
+
         <label for="pulse">Пульс:</label>
-        <input type="number" id="pulse" name="pulse" placeholder="Например, 70">
-        
-        <label for="condition">Состояние:</label>
-        <textarea id="condition" name="condition" placeholder="Например, лёгкая усталость, беспокойство..."></textarea>
-        
+        <input type="number" id="pulse" name="pulse" placeholder="Введите значение пульса">
+
+        <label for="sleep">Сон (часы):</label>
+        <input type="number" id="sleep" name="sleep" placeholder="Введите количество часов сна">
+
+        <label for="condition">Самочувствие:</label>
+        <textarea id="condition" name="condition" placeholder="Введите описание самочувствия"></textarea>
+
         <button type="button" onclick="saveEntry()">Сохранить запись</button>
     </form>
 
-    <h2>Текстовый анализ состояния:</h2>
-    <textarea id="userInput" placeholder="Введите описание вашего состояния, например: 'Сегодня сон был плохим, чувствую напряжение в шее...'"></textarea>
+    <h2>Ваше состояние:</h2>
+    <textarea id="userInput" placeholder="Введите текст, например: 'Сегодня было сильное напряжение, плохо спал...'"></textarea>
     <button onclick="analyze()">Анализ состояния</button>
     <button onclick="clearInput()">Очистить</button>
 
     <div id="outputContainer" class="hidden">
-        <h3>AI Анализ состояния:</h3>
+        <h3>Результат анализа:</h3>
         <div id="output" class="output"></div>
     </div>
 
-    <h2>История данных</h2>
-    <table id="historyTable">
-        <thead>
-            <tr>
-                <th>Дата</th>
-                <th>Систолическое</th>
-                <th>Диастолическое</th>
-                <th>Пульс</th>
-                <th>Состояние</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Здесь будут добавляться записи -->
-        </tbody>
-    </table>
-
-    <div class="chart-container">
-        <h2>График давления (за последние 10 дней):</h2>
-        <canvas id="bpChart"></canvas>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Подключаем скрипты -->
     <script src="ai-helper.js"></script>
 </body>
 </html>
